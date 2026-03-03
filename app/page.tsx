@@ -6,6 +6,7 @@ import Link from "next/link";
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import styles from "./page.module.css";
+import Image from 'next/image'
 
 export default function HomePage() {
   const [vegCount, setVegCount] = useState(0);
@@ -43,7 +44,7 @@ export default function HomePage() {
         
         <div style={{ flex: 1, textAlign: 'right' }}>
           <img 
-            src="https://placehold.jp/24/cccccc/ffffff/500x600.png?text=HeroImage" 
+            src="/ホーム.png"
             alt="規格外野菜" 
             style={{ borderRadius: '24px', maxWidth: '100%', height: 'auto', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}
           />
@@ -128,7 +129,7 @@ export default function HomePage() {
         
         <div className={styles.solutionContent}>
           <div className={styles.solutionImage}>
-            <img src="https://placehold.jp/24/cccccc/ffffff/600x400.png?text=農園の風景画像" alt="佐賀の農園" />
+            <img src="/農園.png" alt="佐賀の農園" />
           </div>
           <div className={styles.solutionList}>
             <div className={styles.solutionItem}>

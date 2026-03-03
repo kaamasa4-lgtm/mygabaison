@@ -64,6 +64,19 @@
   color: #999;
 }
 
+/* --- ヘッダーのアクティブ状態のスタイル --- */
+
+.headerNav .activeLink {
+  color: #00A040 !important;
+  border-bottom: 2px solid #00A040 !important;
+  font-weight: bold !important;
+}
+
+.headerNav .activeSell {
+  background-color: #00A040 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #00A040 !important;
+}
 
 /* =========================================
    📱 スマホ用レスポンシブデザイン (768px以下)

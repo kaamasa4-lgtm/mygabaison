@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
 import styles from "./layout.module.css"; // ★追加
+import HeaderNav from "./components/HeaderNav";
 
 export const metadata: Metadata = {
   title: "佐賀農業マッチング",
@@ -19,12 +20,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <p>地球100億人時代を救う</p>
             </Link>
           </div>
-          <nav className={styles.headerNav}>
+          {/* <nav className={styles.headerNav}>
             <Link href="/search">野菜を探す</Link>
             <Link href="/recipe">レシピ</Link>
             <Link href="/sell" className={styles.sellButton}>出品する</Link>
             <Link href="/mypage">マイページ</Link>
-          </nav>
+          </nav> */}
+          <HeaderNav />
         </header>
 
         <main className={styles.mainContent}>
