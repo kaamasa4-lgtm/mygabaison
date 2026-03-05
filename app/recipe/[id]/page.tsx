@@ -2,17 +2,15 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { initialRecipes } from '@/lib/recipes'; // ★ さっき切り出したJSONデータを読み込む
+import { initialRecipes } from '@/lib/recipes'; 
 import styles from './recipe-detail.module.css';
 
 export default function RecipeDetailPage() {
   const params = useParams();
   const router = useRouter();
   
-  // URLのIDと一致するレシピを配列から探し出す
   const recipe = initialRecipes.find((r) => r.id === params.id);
 
-  // もし見つからなかった場合
   if (!recipe) {
     return (
       <div style={{ textAlign: 'center', padding: '100px' }}>
@@ -30,15 +28,19 @@ export default function RecipeDetailPage() {
 
       {/* 上部：写真とタイトル */}
       <div className={styles.heroSection}>
-        <img src={recipe.image} alt={recipe.title} className={styles.image} />
+        {/* ★ 追加：画像をWrapper（箱）で囲むことで暴走を防ぐ */}
+        <div className={styles.imageWrapper}>
+          <img src={recipe.image} alt={recipe.title} className={styles.image} />
+        </div>
+        
         <div className={styles.headerInfo}>
+          <h1 className={styles.title}>{recipe.title}</h1>
+          <p className={styles.desc}>{recipe.desc}</p>
           <div className={styles.metaTags}>
             <span className={styles.tag}>⏱ {recipe.time}</span>
             <span className={styles.tag}>👨‍👩‍👧‍👦 {recipe.servings}</span>
             <span className={styles.tag} style={{ background: '#E8F5E9', color: '#2E7D32' }}>🥕 {recipe.mainIngredient}</span>
           </div>
-          <h1 className={styles.title}>{recipe.title}</h1>
-          <p className={styles.desc}>{recipe.desc}</p>
         </div>
       </div>
 
