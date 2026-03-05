@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import styles from "./page.module.css";
-// import Image from 'next/image' // もしNext.jsのImageコンポーネントを使わない場合はコメントアウトでOKです
+// import Image from 'next/image'
 
 export default function HomePage() {
   return (
@@ -102,7 +102,8 @@ export default function HomePage() {
         
         <div className={styles.recipeCards}>
           <div className={styles.recipeCard}>
-            <img src="https://placehold.jp/24/ffb6b9/ffffff/400x300.png?text=トマトパスタ" alt="パスタ" className={styles.recipeImage} />
+            {/* ★ パスタの画像をローカルパスに変更（必要に応じて.pngなどに変えてください） */}
+            <img src="/images/home/pasta.png" alt="パスタ" className={styles.recipeImage} />
             <div className={styles.recipeInfo}>
               <h4 className={styles.recipeTitle}>規格外トマトの濃厚トマトパスタ</h4>
               <p className={styles.recipeDesc}>形が不揃いなトマトでも、完熟の甘みが広がる本格的なトマトソースパスタ。</p>
@@ -114,7 +115,8 @@ export default function HomePage() {
             </div>
           </div>
           <div className={styles.recipeCard}>
-            <img src="https://placehold.jp/24/ffdfba/ffffff/400x300.png?text=人参スープ" alt="スープ" className={styles.recipeImage} />
+            {/* ★ スープの画像をローカルパスに変更 */}
+            <img src="/images/home/soup.png" alt="スープ" className={styles.recipeImage} />
             <div className={styles.recipeInfo}>
               <h4 className={styles.recipeTitle}>曲がり人参のポタージュスープ</h4>
               <p className={styles.recipeDesc}>曲がった人参も、スープにすれば形は関係なし。優しい甘さのポタージュ。</p>
@@ -126,7 +128,8 @@ export default function HomePage() {
             </div>
           </div>
           <div className={styles.recipeCard}>
-            <img src="https://placehold.jp/24/baffc9/ffffff/400x300.png?text=きゅうりの浅漬け" alt="浅漬け" className={styles.recipeImage} />
+            {/* ★ 浅漬けの画像をローカルパスに変更 */}
+            <img src="/images/home/pickle.png" alt="浅漬け" className={styles.recipeImage} />
             <div className={styles.recipeInfo}>
               <h4 className={styles.recipeTitle}>曲がりきゅうりの即席浅漬け</h4>
               <p className={styles.recipeDesc}>曲がったきゅうりこそ、味が染み込みやすい！簡単で美味しい浅漬け。</p>
