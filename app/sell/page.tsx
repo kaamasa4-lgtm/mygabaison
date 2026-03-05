@@ -7,7 +7,6 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import styles from "./sell.module.css";
 
 export default function SellPage() {
-  // ★現在のステップを管理する変数（1 = 農家情報, 2 = 野菜情報）
   const [step, setStep] = useState(1);
 
   // --- Step 1: 農家情報 ---
@@ -15,11 +14,15 @@ export default function SellPage() {
   const [location, setLocation] = useState('');
   const [experience, setExperience] = useState('');
   const [description, setDescription] = useState('');
-  const [phone, setPhone] = useState('');
+  // ★電話番号を3分割
+  const [phone1, setPhone1] = useState('');
+  const [phone2, setPhone2] = useState('');
+  const [phone3, setPhone3] = useState('');
   const [mailadress, setMailadress] = useState('');
+  
   // --- Step 2: 野菜情報 ---
   const [vegName, setVegName] = useState('');
-  const [category, setCategory] = useState('果菜類'); // 初期値
+  const [category, setCategory] = useState('果菜類'); 
   const [price, setPrice] = useState('');
   const [originalPrice, setOriginalPrice] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -28,16 +31,17 @@ export default function SellPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // --- 次へ進む処理（保存はまだしない） ---
+  // --- 次へ進む処理 ---
   const handleNext = () => {
-    if (!farmerName || !location || !phone || !mailadress) {
+    // ★電話番号のバリデーションを分割対応に変更
+    if (!farmerName || !location || !phone1 || !phone2 || !phone3 || !mailadress) {
       alert("必須項目（農園名、所在地、電話番号、メールアドレス）を入力してください！");
       return;
     }
-    setStep(2); // Step 2へ切り替え！
+    setStep(2);
   };
 
-  // --- 最終出品処理（まとめてFirebaseへ！） ---
+  // --- 最終出品処理 ---
   const handleSubmit = async () => {
     if (!vegName || !price || !originalPrice || !quantity || !reason || !vegDescription) {
       alert("必須項目をすべて入力してください！");
@@ -46,28 +50,26 @@ export default function SellPage() {
 
     setIsSubmitting(true);
 
+    // ★ データベース保存前に電話番号をハイフンで結合
+    const fullPhone = `${phone1}-${phone2}-${phone3}`;
+
     try {
-      // 今回は検索しやすいように「vegetables」という箱に全てまとめます
       await addDoc(collection(db, "vegetables"), {
-        // 農家情報
         farmer: farmerName,
         location: location,
-        phone: phone,
+        phone: fullPhone, // 結合したものを保存
         mailadress: mailadress,
-        // 野菜情報
         name: vegName,
         category: category,
-        price: Number(price), // 数字として保存
+        price: Number(price),
         originalPrice: Number(originalPrice),
-        stock: quantity, // 出品数量
-        tag: reason, // 規格外理由
+        stock: quantity + 'kg', // ★数字に「kg」を付与して保存
+        tag: reason,
         description: vegDescription,
-        // 画像は未実装なので仮のものを入れます
         image: "https://placehold.jp/24/cccccc/ffffff/400x300.png?text=審査中",
         createdAt: serverTimestamp(),
       });
       
-      // --- Resend APIを呼び出してメール送信 ---
       await fetch('/api/send', {
         method: 'POST',
         headers: {
@@ -81,14 +83,12 @@ export default function SellPage() {
           quantity: quantity,
         }),
       });
-      // --- Resend API呼び出し終了 ---
       
       setStep(3);
-      alert("出品が完了しました！審査結果をお待ちください。");
       
-      // 入力欄を空にしてStep1に戻す
-      // setStep(1);
-      setFarmerName(''); setLocation(''); setExperience(''); setDescription('');  setPhone(''); setMailadress('');
+      // 入力欄をクリア
+      setFarmerName(''); setLocation(''); setExperience(''); setDescription('');  
+      setPhone1(''); setPhone2(''); setPhone3(''); setMailadress('');
       setVegName(''); setCategory('果菜類'); setPrice(''); setOriginalPrice(''); setQuantity(''); setReason(''); setVegDescription('');
       
     } catch (error) {
@@ -102,7 +102,6 @@ export default function SellPage() {
   return (
     <div className={styles.container}>
       
-      {/* --- 変更開始：ヘッダーのテキストをステップで出し分け --- */}
       <div className={styles.pageHeader}>
         <h2 className={styles.pageTitle}>
           {step === 3 ? "出品を受け付けました" : "規格外野菜を出品する"}
@@ -112,7 +111,6 @@ export default function SellPage() {
         </p>
       </div>
 
-      {/* ステップバー：3（出品完了）を追加 */}
       <div className={styles.stepper}>
         <div className={`${styles.step} ${step >= 1 ? styles.stepActive : ''}`}>
           <div className={styles.stepNumber}>1</div>
@@ -123,17 +121,14 @@ export default function SellPage() {
           <div className={styles.stepNumber}>2</div>
           <span>野菜情報</span>
         </div>
-        {/* 完了ステップへのラインと円を追加 */}
         <div className={styles.stepLine} style={{ backgroundColor: step === 3 ? '#00A040' : '#EAEAEA' }}></div>
         <div className={`${styles.step} ${step === 3 ? styles.stepActive : ''}`}>
           <div className={styles.stepNumber}>3</div>
           <span>出品完了</span>
         </div>
       </div>
-      {/* --- 変更終了 --- */}
 
       <div className={styles.formCard}>
-        {/* --- 変更開始：条件分岐を整理（step === 1） --- */}
         {step === 1 && (
           <>
             <h3 className={styles.formTitle}>農家情報の登録</h3>
@@ -146,18 +141,33 @@ export default function SellPage() {
                 <label className={styles.label}>所在地 <span className={styles.required}>*</span></label>
                 <input type="text" className={styles.input} placeholder="例: 佐賀県佐賀市" value={location} onChange={(e) => setLocation(e.target.value)} />
               </div>
+
+              {/* ★ 単位（年）を外に配置 */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>農業経験年数</label>
-                <input type="text" className={styles.input} placeholder="例: 20年" value={experience} onChange={(e) => setExperience(e.target.value)} />
+                <div className={styles.inputWithUnit}>
+                  <input type="number" className={styles.input} placeholder="例: 20" value={experience} onChange={(e) => setExperience(e.target.value)} />
+                  <span className={styles.unitText}>年</span>
+                </div>
               </div>
+
               <div className={styles.formGroup}>
                 <label className={styles.label}>農園の紹介</label>
                 <textarea className={styles.textarea} placeholder="農園のこだわり等..." value={description} onChange={(e) => setDescription(e.target.value)} />
               </div>
+
+              {/* ★ 電話番号を3マスに分割 */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>電話番号 <span className={styles.required}>*</span></label>
-                <input type="tel" className={styles.input} placeholder="例: 090-1234-5678" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <div className={styles.phoneGroup}>
+                  <input type="tel" maxLength={4} className={styles.input} placeholder="090" value={phone1} onChange={(e) => setPhone1(e.target.value)} />
+                  <span className={styles.phoneDash}>-</span>
+                  <input type="tel" maxLength={4} className={styles.input} placeholder="1234" value={phone2} onChange={(e) => setPhone2(e.target.value)} />
+                  <span className={styles.phoneDash}>-</span>
+                  <input type="tel" maxLength={4} className={styles.input} placeholder="5678" value={phone3} onChange={(e) => setPhone3(e.target.value)} />
+                </div>
               </div>
+
               <div className={styles.formGroup}>
                 <label className={styles.label}>メールアドレス <span className={styles.required}>*</span></label>
                 <input type="email" className={styles.input} placeholder="例: example@gmail.com" value={mailadress} onChange={(e) => setMailadress(e.target.value)} />
@@ -169,9 +179,7 @@ export default function SellPage() {
             </form>
           </>
         )}
-        {/* --- 変更終了 --- */}
 
-        {/* --- 変更開始：条件分岐を整理（step === 2） --- */}
         {step === 2 && (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
@@ -197,19 +205,31 @@ export default function SellPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+                {/* ★ 単位（円/kg）を外に配置 */}
                 <div style={{ flex: 1 }}>
-                  <label className={styles.label}>通常価格(円/kg) <span className={styles.required}>*</span></label>
-                  <input type="number" className={styles.input} placeholder="例: 300" value={originalPrice} onChange={(e) => setOriginalPrice(e.target.value)} />
+                  <label className={styles.label}>通常価格 <span className={styles.required}>*</span></label>
+                  <div className={styles.inputWithUnit}>
+                    <input type="number" className={styles.input} placeholder="例: 300" value={originalPrice} onChange={(e) => setOriginalPrice(e.target.value)} />
+                    <span className={styles.unitText}>円/kg</span>
+                  </div>
                 </div>
+                {/* ★ 単位（円/kg）を外に配置 */}
                 <div style={{ flex: 1 }}>
-                  <label className={styles.label}>販売価格(円/kg) <span className={styles.required}>*</span></label>
-                  <input type="number" className={styles.input} placeholder="例: 150" value={price} onChange={(e) => setPrice(e.target.value)} />
+                  <label className={styles.label}>販売価格 <span className={styles.required}>*</span></label>
+                  <div className={styles.inputWithUnit}>
+                    <input type="number" className={styles.input} placeholder="例: 150" value={price} onChange={(e) => setPrice(e.target.value)} />
+                    <span className={styles.unitText}>円/kg</span>
+                  </div>
                 </div>
               </div>
 
+              {/* ★ 単位（kg）を外に配置 */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>出品数量(kg) <span className={styles.required}>*</span></label>
-                <input type="text" className={styles.input} placeholder="例: 50kg" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                <label className={styles.label}>出品数量 <span className={styles.required}>*</span></label>
+                <div className={styles.inputWithUnit}>
+                  <input type="number" className={styles.input} placeholder="例: 50" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                  <span className={styles.unitText}>kg</span>
+                </div>
               </div>
 
               <div className={styles.formGroup}>
@@ -243,9 +263,7 @@ export default function SellPage() {
             </form>
           </>
         )}
-        {/* --- 変更終了 --- */}
 
-        {/* --- 変更開始：Step 3 の完了画面を追加（フォームと同じ場所に表示） --- */}
         {step === 3 && (
           <div style={{ textAlign: 'center', padding: '40px 20px' }}>
             <div style={{ fontSize: '60px', marginBottom: '20px' }}>🎉</div>
@@ -273,7 +291,6 @@ export default function SellPage() {
             </div>
           </div>
         )}
-        {/* --- 変更終了 --- */}
       </div>
     </div>
   );

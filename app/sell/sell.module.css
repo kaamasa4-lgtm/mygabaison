@@ -278,3 +278,35 @@
     box-sizing: border-box;
   }
 }
+/* --- 追加：単位付き入力欄・電話番号のデザイン --- */
+.inputWithUnit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inputWithUnit .input {
+  flex: 1; /* 入力欄を可能な限り広げる */
+}
+
+.unitText {
+  font-weight: bold;
+  color: #333;
+  white-space: nowrap; /* 「円/kg」が改行されないようにする */
+}
+
+.phoneGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.phoneGroup .input {
+  text-align: center; /* 数字を中央揃えにして見やすくする */
+  padding: 12px 8px; /* 横の余白を詰めて3つ並べやすくする */
+}
+
+.phoneDash {
+  font-weight: bold;
+  color: #666;
+}
