@@ -36,13 +36,11 @@ const getVegetableImage = (name: string, category: string, defaultImage: string)
   if (lowerName.includes('ブロッコリー')) return '/images/items/broccoli.png';
   if (lowerName.includes('玉ねぎ') || lowerName.includes('タマネギ') || lowerName.includes('たまねぎ')) return '/images/items/onion.png';
   if (lowerName.includes('かぼちゃ') || lowerName.includes('カボチャ')) return '/images/items/pumpkin.png';
-  if (lowerName.includes('大根') || lowerName.includes('だいこん')) return '/images/recipe/daikon.png'; // ※大根はレシピ用の画像を使用
-  if (lowerName.includes('きゅうり') || lowerName.includes('キュウリ')) return '/images/recipe/pickle.png'; // ※きゅうりはレシピ用の画像を使用
 
   // 2. キーワードに引っかからなかった場合は、カテゴリーで判定
-  if (category === '果菜類') return '/images/items/tomato.png'; // 果菜類の代表としてトマト
-  if (category === '根菜類') return '/images/items/carrot.png'; // 根菜類の代表として人参
-  if (category === '葉菜類') return '/images/items/cabbage.png'; // 葉菜類の代表としてキャベツ
+  if (category === '果菜類') return 'https://placehold.jp/e53935/ffffff/400x600.png?text=果菜類'; // 果菜類の代表としてトマト
+  if (category === '根菜類') return 'https://placehold.jp/f57c00/ffffff/400x600.png?text=根菜類'; // 根菜類の代表として人参
+  if (category === '葉菜類') return 'https://placehold.jp/43a047/ffffff/400x600.png?text=葉菜類'; // 葉菜類の代表としてキャベツ
   
   return defaultImage; // それでもダメなら元の画像（NoImage）
 };
