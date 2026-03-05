@@ -42,7 +42,11 @@ export default function MyPage() {
 
       {/* プロフィールカード（ゲストモード） */}
       <div className={styles.profileCard}>
-        <div className={styles.avatar}>🧑‍🌾</div>
+        {/* ★ 変更：絵文字を消して画像を配置 */}
+        <div className={styles.avatar}>
+          <img src="/images/avatar.png" alt="プロフィール" className={styles.avatarImage} />
+        </div>
+        
         <div className={styles.profileInfo}>
           <h2>ゲストユーザー <span className={styles.badge}>お試し体験中</span></h2>
           <p style={{ color: '#666', margin: 0, fontSize: '14px' }}>

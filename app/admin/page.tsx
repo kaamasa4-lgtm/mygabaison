@@ -75,7 +75,7 @@ export default function AdminPage() {
   return (
     <div className={styles.container}>
       <div className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>👑 管理者ダッシュボード</h1>
+        <h1 className={styles.pageTitle}>管理者ダッシュボード</h1>
         <span className={styles.dangerBadge}>※関係者外秘</span>
       </div>
 
