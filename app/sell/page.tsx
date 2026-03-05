@@ -6,6 +6,14 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; 
 import styles from "./sell.module.css";
 
+//EmailJSのインポート
+import emailjs from '@emailjs/browser';
+
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID as string;
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID as string;
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY as string;
+
+
 export default function SellPage() {
   const [step, setStep] = useState(1);
 
@@ -70,19 +78,35 @@ export default function SellPage() {
         createdAt: serverTimestamp(),
       });
       
-      await fetch('/api/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: mailadress,
-          farmerName: farmerName,
-          vegName: vegName,
+      // await fetch('/api/send', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     to: mailadress,
+      //     farmerName: farmerName,
+      //     vegName: vegName,
+      //     price: price,
+      //     quantity: quantity,
+      //   }),
+      // });
+
+      // メール送信処理
+      await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        {
+          to_email: mailadress,
+          user_name: farmerName,
+          veg_name: vegName,
           price: price,
           quantity: quantity,
-        }),
-      });
+        },
+        {
+          publicKey: PUBLIC_KEY
+        }
+      ); 
       
       setStep(3);
       
