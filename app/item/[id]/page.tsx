@@ -23,7 +23,7 @@ type Vegetable = {
   status?: string;
 };
 
-// ★ こちらにも名前から画像ファイル名を判定する関数を追加
+// ★ 検索ページと完全に同じロジック＆テーマカラーに統一！
 const getVegetableImage = (name: string, category: string, defaultImage: string) => {
   const lowerName = name.toLowerCase();
   
@@ -37,16 +37,18 @@ const getVegetableImage = (name: string, category: string, defaultImage: string)
   if (lowerName.includes('ブロッコリー')) return '/images/items/broccoli.png';
   if (lowerName.includes('玉ねぎ') || lowerName.includes('タマネギ') || lowerName.includes('たまねぎ')) return '/images/items/onion.png';
   if (lowerName.includes('かぼちゃ') || lowerName.includes('カボチャ')) return '/images/items/pumpkin.png';
+  
+  // ★ 追加していただいた大根・きゅうりもそのまま活かします！
   if (lowerName.includes('大根') || lowerName.includes('だいこん')) return '/images/recipe/daikon.png';
   if (lowerName.includes('きゅうり') || lowerName.includes('キュウリ')) return '/images/recipe/pickle.png';
 
-  if (category === '果菜類') return '/images/items/tomato.png';
-  if (category === '根菜類') return '/images/items/carrot.png';
-  if (category === '葉菜類') return '/images/items/cabbage.png';
+  // ★ カテゴリーごとのプレースホルダー（先ほど決めたカラー）に修正！
+  if (category === '果菜類') return 'https://placehold.jp/e53935/ffffff/400x600.png?text=果菜類'; // 赤
+  if (category === '根菜類') return 'https://placehold.jp/f57c00/ffffff/400x600.png?text=根菜類'; // オレンジ
+  if (category === '葉菜類') return 'https://placehold.jp/43a047/ffffff/400x600.png?text=葉菜類'; // 緑
   
   return defaultImage;
 };
-
 
 export default function ItemDetailPage() {
   const params = useParams(); 
